@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#container_id=$(awk -F / '$0 ~ /docker/ && NR == 1 {print $3}' /proc/self/cgroup)
+cont_name="jtheo/devops"
+
+cat << EOF 
+
+alias terraform="docker run -it ${cont_name} terraform"
+alias jq="docker run -it ${cont_name} jq"
+alias aws="docker run -it ${cont_name} aws"
+
+EOF
