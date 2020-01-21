@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+export PS1="\[\e[36;1m\]\u\[\e[0;32m\]@\[\e[32;1m\]\h:\[\e[0;31m\] \w \[\e[0m\]: "
+alias ll="ls -l"
+
+if [[ ! -e ${HOME}/.vimrc ]]; then
+    cat <<EOF> ${HOME}/.vimrc
+set et sts=2 ts=2 sw=2
+
+EOF
+fi
+
+function gh_key(){
+    [[ ! -d /cci/.ssh ]] && mkdir -p /cci/.ssh
+    if [[ ! -e /cci/.ssh/known_hosts ]] || ! grep -q github.com /cci/.ssh/known_hosts ; then
+        ssh-keyscan github.com >> /cci/.ssh/known_hosts
+    fi
+    if [[ ! -e /cci/.ssh/id_rsa ]]; then
+      printf "%s\n" "${CHECKOUT_KEY}" > ~/.ssh/id_rsa
+    fi
+}
+
+function git_clone(){
+    gh_key
+    git clone --single-branch --depth=1 "$@"
+}
+
+
+gh_key
+
+${@}
